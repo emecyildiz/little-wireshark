@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/ağ taraması.iml" filepath="$PROJECT_DIR$/.idea/ağ taraması.iml" />
+      <module fileurl="file://$PROJECT_DIR$/networkshark/networkshark.iml" filepath="$PROJECT_DIR$/networkshark/networkshark.iml" />
+    </modules>
+  </component>
+</project>
