@@ -12,7 +12,7 @@ public class porthunter extends JFrame {
 
 
     public porthunter(){
-        String[] kolonlar = {"PID", "Program Adı", "Protokol", "Adres/Port", "Durum"};
+        String[] kolonlar = {"PID", "Program Adı", "Protokol", "Adres/Port", "Durum","tehlike"};
         model = new DefaultTableModel(kolonlar,0);
         btntara = new JButton("taramayı başlat");
         setSize(800,600);
@@ -40,6 +40,20 @@ public class porthunter extends JFrame {
 
     }
     public void scanner(){
+        java.util.List<String> guvenliProgramlar = java.util.Arrays.asList(
+                "System",           // Çekirdek
+                "svchost.exe",      // Servis Barındırıcı (İnternet, Ses vb.)
+                "lsass.exe",        // Güvenlik ve Oturum Açma
+                "csrss.exe",        // Windows Görüntü Yöneticisi
+                "wininit.exe",      // Başlangıç Yöneticisi
+                "services.exe",     // Servisleri Başlatan
+                "smss.exe",         // Oturum Yöneticisi
+                "spoolsv.exe",      // Yazıcı Servisi
+                "explorer.exe",     // Masaüstü ve Klasörler
+                "taskhostw.exe",    // Görev Zamanlayıcı
+                "Registry",         // Kayıt Defteri
+                "winlogon.exe"      // Oturum Açma Ekranı
+        );
         java.util.List<String> riskliportlar = java.util.Arrays.asList("21", "23", "445", "139", "3389", "4444", "6667");
         try {
             String[]  commends = {"cmd","/c","netstat -ano"};
@@ -66,7 +80,7 @@ public class porthunter extends JFrame {
                     int splitindex = rawadress.lastIndexOf(":");
                     String ip = rawadress.substring(0,splitindex);
                     String port = rawadress.substring(splitindex+1);
-                    String tehlike = "normal";
+                    String tehlike = "Bilinmiyor";
 
 
                     while ((line1 = bufferedReader1.readLine()) != null){
@@ -75,11 +89,21 @@ public class porthunter extends JFrame {
                         }
                         String[] pieces1 = line1.trim().split("\\s+");
                         String exe = pieces1[0];
-                        if (riskliportlar.contains(port)){
-                            tehlike = "tehlikeli portlar var ";
+                        if(guvenliProgramlar.contains(exe)){
+                            tehlike = "Güvenli";
+                            if(port.equals("445") || port.equals("3389")){
+                                tehlike = "Güvenli - [Ağ paylaşımı]";
+                            }
+                        }
+
+                        else if (riskliportlar.contains(port)){
+                            tehlike = " risk var ";
                         }
                         else if (exe.startsWith("nc") || exe.contains("ncat") || exe.contains("powershell")) {
                             tehlike = "💀 ARKA KAPI ŞÜPHESİ!";
+                        }
+                        else {
+                            tehlike = "Normal Uygulama";
                         }
 
 
