@@ -40,7 +40,7 @@ public class porthunter extends JFrame {
 
     }
     public void scanner(){
-
+        java.util.List<String> riskliportlar = java.util.Arrays.asList("21", "23", "445", "139", "3389", "4444", "6667");
         try {
             String[]  commends = {"cmd","/c","netstat -ano"};
             ProcessBuilder builder = new ProcessBuilder(commends);
@@ -66,15 +66,24 @@ public class porthunter extends JFrame {
                     int splitindex = rawadress.lastIndexOf(":");
                     String ip = rawadress.substring(0,splitindex);
                     String port = rawadress.substring(splitindex+1);
+                    String tehlike = "normal";
+
+
                     while ((line1 = bufferedReader1.readLine()) != null){
                         if(line1.isEmpty() || line1.startsWith("Image Name") || line1.startsWith("=")){
                             continue;
                         }
                         String[] pieces1 = line1.trim().split("\\s+");
-
-
                         String exe = pieces1[0];
-                        model.addRow(new Object[]{pid, exe, pieces[0],port,pieces[3]});
+                        if (riskliportlar.contains(port)){
+                            tehlike = "tehlikeli portlar var ";
+                        }
+                        else if (exe.startsWith("nc") || exe.contains("ncat") || exe.contains("powershell")) {
+                            tehlike = "💀 ARKA KAPI ŞÜPHESİ!";
+                        }
+
+
+                        model.addRow(new Object[]{pid, exe, pieces[0],port,pieces[3]+ " (" + ip + ")", tehlike});
 
                     }
 
